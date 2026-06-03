@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useUserStore } from '@/stores/user'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -103,27 +102,9 @@ const router = createRouter({
   ]
 })
 
-// 路由守卫
+// 路由守卫 - 简化版本，直接访问所有页面
 router.beforeEach(async (to, from, next) => {
-  const userStore = useUserStore()
-
-  // 确保从localStorage恢复token状态
-  if (!userStore.token && localStorage.getItem('token')) {
-    userStore.token = localStorage.getItem('token')
-  }
-
-  if (to.meta.requiresAuth && !userStore.isLoggedIn) {
-    next('/login')
-  } else if (to.meta.requiresAdmin) {
-    // 检查管理员权限
-    if (userStore.userInfo && (userStore.userInfo.role === 'admin' || userStore.userInfo.role === 'super_admin')) {
-      next()
-    } else {
-      next('/')
-    }
-  } else {
-    next()
-  }
+  next()
 })
 
 export default router
